@@ -30,9 +30,9 @@
                 </form>
             </div>
         </div>
-        <div class="row">
+        <div class="row adresse">
             <div class="col-12 d-flex justify-content-center">
-                <ul>
+                <ul v-bind:class="{ 'active': searchAddress.length > 4}">
                     <li v-for="adresse in adresses">
                         <p class="p-0">{{ adresse.properties['label'] }}<br></p>
                         <p class="coord">Latitude: {{ adresse.geometry["coordinates"][0] }} | Longitude: {{
@@ -81,8 +81,10 @@
                         console.log(error)
                     }
                 }
-            },
+                else {
 
+                }
+            },
         }
     }).mount("#main")
 </script>

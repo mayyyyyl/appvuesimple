@@ -28,3 +28,11 @@ li {
 hr {
     size: 80%;
 }
+
+ul {
+    display: none;
+}
+
+ul.active {
+    display: block;
+}
