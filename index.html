@@ -11,13 +11,30 @@
 </head>
 
 <body>
-    <div id="main">
-        <h1 class="text-center p-3">Autocompleter une adresse lors d'une recherche</h1>
-        <ul>
-            <li v-for="adresse in adresses">
-                <p>{{ adresse.properties['label'] }}</p>
-            </li>
-        </ul>
+    <div class="container" id="main">
+        <h1 class="text-center p-3">Retrouvez l'adresse exacte que vous recherchez</h1>
+        <p class="text-center p-1 pb-5">Retrouver l'adresse complète d'un lieu que vous recherchez ou utilisez cet outil
+            comme une aide pour
+            compléter les formulaires nécessittant une adresse. L'utilisation de cette API permet de limiter l'entrée
+            d'adresse inexistante car elle se base sur les données du gouvernement.</p>
+        <div class="row pb-4 align-items-center">
+            <div class="col-12 d-flex align-items-center justify-content-center">
+                <h5 class="p-3">Rechercher une adresse:</h5>
+                <form class="p-3">
+                    <input class="form-control" type="text" maxlength="50" v-model="searchAddress"
+                        placeholder="Entrez une adresse" autocomplete="off" required></input>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 d-flex justify-content-center">
+                <ul>
+                    <li v-for="adresse in adresses">
+                        <p>{{ adresse.properties['label'] }}</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 </body>
 <script src="https://unpkg.com/vue@3"></script>
@@ -26,27 +43,36 @@
     integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
     crossorigin="anonymous"></script>
 <script>
-    const apiUrl = "https://api-adresse.data.gouv.fr/search/?q=8+bd+du+port&limit=15"
+    const apiUrl = "https://api-adresse.data.gouv.fr/search/?q="
+    const limit = "&limit=15"
 
     Vue.createApp({
         data() {
             return {
                 adresses: null,
+                searchAddress: "",
             };
         },
         created: function () {
             this.fetchData()
         },
+        watch: {
+            searchAddress: "fetchData",
+        },
         methods: {
             fetchData: async function () {
-                try {
-                    const response = await axios.get(apiUrl)
-                    console.log(response.data['features'])
-                    this.adresses = response.data['features']
-                } catch (error) {
-                    console.log(error)
+                const searchAddress = this.searchAddress
+                if (searchAddress.length > 4) {
+                    try {
+                        const response = await axios.get(apiUrl + searchAddress + limit)
+                        console.log(response.data['features'])
+                        this.adresses = response.data['features']
+                    } catch (error) {
+                        console.log(error)
+                    }
                 }
             },
+
         }
     }).mount("#main")
 </script>
